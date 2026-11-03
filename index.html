@@ -59,6 +59,14 @@ textarea{resize:vertical;min-height:44px}
 .f-result{font-size:14px}
 .f-result .miss{color:var(--danger)}
 
+.colecoes{margin:0 0 22px}
+.colecoes h2{font-size:20px;margin-bottom:10px}
+.col-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(150px,170px);gap:12px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+.col{scroll-snap-align:start;border:1px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer;padding:8px;text-align:left;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow)}
+.col img{width:100%;aspect-ratio:1;object-fit:contain;background:var(--bg);border-radius:6px}
+.col span{font-size:13px;font-weight:600;line-height:1.3}
+.col[aria-pressed=true]{outline:2px solid var(--brand);outline-offset:1px}
+.alb-thumb{width:22px;height:22px;object-fit:cover;border-radius:4px;vertical-align:middle;margin-right:6px;background:var(--bg)}
 .filters{display:grid;gap:10px;grid-template-columns:1fr 1fr;margin-bottom:14px}
 .filters .q{grid-column:1/-1}
 @media(min-width:860px){.filters{grid-template-columns:2fr 1.4fr 1fr 1fr 1fr}.filters .q{grid-column:auto}}
@@ -130,6 +138,11 @@ footer.site{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--mut
     <div class="f-result" id="fResult" aria-live="polite"></div>
   </section>
 
+  <section class="colecoes" aria-labelledby="coltit">
+    <h2 id="coltit">Coleções</h2>
+    <div class="col-row" id="colRow"></div>
+  </section>
+
   <div id="notice"></div>
 
   <section class="filters" aria-label="Filtros">
@@ -148,7 +161,7 @@ footer.site{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--mut
 </main>
 
 <footer class="site">
-  <div class="wrap">Minhas Figurinhas · Caruaru-PE · Pedidos e dúvidas pelo WhatsApp. Não somos afiliados à Panini, à Topps nem às competições citadas; os nomes servem só para identificar cada coleção.</div>
+  <div class="wrap">Minhas Figurinhas · Caruaru-PE · Pedidos e dúvidas pelo WhatsApp. Não somos afiliados à Panini, à Topps nem às competições citadas. Nomes e capas aparecem só para identificar cada coleção, a partir do material de divulgação das editoras.</div>
 </footer>
 
 <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="ctit">
@@ -180,6 +193,19 @@ const CONFIG = {
   FRETE_GRATIS_A_PARTIR: 0
 };
 /* ====================================== */
+
+// Capas das coleções (nome igual ao da aba Álbuns da planilha)
+const CAPAS = {
+  "Copa do Mundo 2026": "assets/capas/ALB-004.jpg",
+  "Copa do Mundo 2022": "assets/capas/ALB-003.jpg",
+  "Copa do Mundo 2014": "assets/capas/ALB-001.jpg",
+  "Copa do Mundo Feminina 2023": "assets/capas/ALB-007.jpg",
+  "Copa América 2024": "assets/capas/ALB-013.jpg",
+  "Libertadores 2025": "assets/capas/ALB-037.jpg",
+  "Brasileirão 2025": "assets/capas/ALB-029.jpg",
+  "Brasileirão 2023": "assets/capas/ALB-027.jpg",
+  "Brasileirão 2020": "assets/capas/ALB-024.jpg"
+};
 
 const DEMO = [
   ["DEMO-1","10 - Neymar Jr - Brasil - Copa do Mundo 2014","Copa do Mundo 2014","2014","10","Neymar Jr","Brasil","Normal","Rara","Nova","1","R$ 12,00"],
@@ -256,7 +282,7 @@ function opts(el, label, values){
   el.innerHTML = `<option value="">${label}</option>` + values.map(v=>`<option>${esc(v)}</option>`).join("");
 }
 function fillSelects(){
-  const albums=[...new Set(ITEMS.map(i=>i.album))].sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+  const albums=[...new Set([...ITEMS.map(i=>i.album),...Object.keys(CAPAS)])].sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
   opts($("#album"),"Álbum: todos",albums);
   opts($("#fAlbum"),"Escolha o álbum",albums);
   opts($("#tipo"),"Tipo: todos",[...new Set(ITEMS.map(i=>i.tipo))].sort());
@@ -281,12 +307,23 @@ function render(){
         <span><span class="who">${esc(i.nome)}</span><br><span class="team">${esc(i.time)}</span></span>
       </div>
       <div class="body">
-        <div class="alb">${esc(i.album)}</div>
+        <div class="alb">${CAPAS[i.album]?`<img class="alb-thumb" src="${CAPAS[i.album]}" alt="" loading="lazy">`:""}${esc(i.album)}</div>
         <div class="tags">${esc(i.tipo)} · ${esc(i.estado)} · ${i.qtd} em estoque</div>
         <div class="foot"><span class="price">${brl(i.preco)}</span>
           <button class="add" data-sku="${esc(i.sku)}" aria-pressed="${inCart}">${inCart?"No carrinho":"Adicionar"}</button></div>
       </div></article>`;
-  }).join("") : `<div class="empty">Nada encontrado com esses filtros. Mande sua lista de faltantes pelo WhatsApp que a gente procura.</div>`;
+  }).join("") : `<div class="empty">${a&&!q&&!t&&!r?`Ainda não temos ${esc(a)} em estoque.`:"Nada encontrado com esses filtros."} Mande sua lista de faltantes pelo WhatsApp que a gente procura.</div>`;
+  renderCols();
+}
+
+function renderCols(){
+  const sel=$("#album").value;
+  $("#colRow").innerHTML=Object.entries(CAPAS).map(([nome,src])=>{
+    const n=ITEMS.filter(i=>i.album===nome).length;
+    return `<button class="col" data-album="${esc(nome)}" aria-pressed="${sel===nome}">
+      <img src="${src}" alt="Capa do álbum ${esc(nome)}" loading="lazy"><span>${esc(nome)}</span>
+      <small style="color:var(--muted)">${n?n+(n===1?" item":" itens"):"Sob encomenda"}</small></button>`;
+  }).join("");
 }
 
 function add(sku,n=1){
@@ -363,6 +400,12 @@ function openCart(){ $("#drawer").classList.add("open"); }
 function closeCart(){ $("#drawer").classList.remove("open"); }
 
 ["q","album","tipo","raridade","ordem"].forEach(id=>$("#"+id).addEventListener("input",render));
+$("#colRow").addEventListener("click",e=>{
+  const b=e.target.closest(".col"); if(!b) return;
+  const al=$("#album"); al.value = al.value===b.dataset.album ? "" : b.dataset.album;
+  $("#q").value=""; $("#tipo").value=""; $("#raridade").value="";
+  render(); $("#grid").scrollIntoView({behavior:"smooth",block:"start"});
+});
 $("#grid").addEventListener("click",e=>{ const b=e.target.closest(".add"); if(b){ cart[b.dataset.sku]?setQty(b.dataset.sku,0):add(b.dataset.sku); } });
 $("#items").addEventListener("click",e=>{
   const i=e.target.dataset.inc, d=e.target.dataset.dec;
