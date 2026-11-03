@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minhas Figurinhas</title>
+<meta name="description" content="Figurinhas avulsas, cards e álbuns para fechar sua coleção. Mande sua lista de faltantes e receba tudo num envio só.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ee; --surface:#ffffff; --ink:#1b1d24; --muted:#5d6170; --line:#e3e0d6;
+  --brand:#0f7b4a; --brand-ink:#ffffff; --accent:#f2b705; --danger:#c0392b;
+  --r-comum:#8a8f9c; --r-incomum:#2f80ed; --r-rara:#9b51e0; --r-muito:#e67e22; --r-lend:#d4a017;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121418; --surface:#1b1e24; --ink:#eceef2; --muted:#a2a7b4; --line:#2c3038;
+    --brand:#21a867; --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121418; --surface:#1b1e24; --ink:#eceef2; --muted:#a2a7b4; --line:#2c3038;
+  --brand:#21a867; --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:Archivo,system-ui,sans-serif;line-height:1.15;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+
+header.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;height:60px}
+.logo{white-space:nowrap;display:flex;align-items:center;gap:8px;font-family:Archivo;font-weight:900;font-size:19px;text-decoration:none;color:var(--ink)}
+.logo .tile{width:30px;height:38px;border-radius:5px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:14px;transform:rotate(-6deg);box-shadow:3px 3px 0 var(--accent)}
+.top .spacer{flex:1}
+.cart-btn{display:flex;align-items:center;gap:8px;border:0;background:var(--brand);color:var(--brand-ink);padding:9px 14px;border-radius:999px;font-weight:600;cursor:pointer}
+.cart-btn .count{background:#fff;color:var(--brand);border-radius:999px;min-width:22px;padding:0 6px;font-size:13px;text-align:center}
+
+.hero{padding:36px 0 20px}
+.hero h1{font-size:clamp(28px,5vw,46px);font-weight:900;max-width:760px}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 60%,var(--accent) 60%)}
+.hero p{color:var(--muted);max-width:620px;margin:12px 0 0;font-size:16px}
+.perks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;color:var(--muted);font-size:14px}
+.perks span::before{content:"✓ ";color:var(--brand);font-weight:700}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.faltantes{padding:18px;margin:8px 0 22px;display:grid;gap:12px;grid-template-columns:1fr}
+.faltantes h2{font-size:20px}
+.faltantes p{margin:0;color:var(--muted);font-size:14px}
+.f-row{display:grid;gap:10px;grid-template-columns:1fr}
+@media(min-width:760px){.f-row{grid-template-columns:260px 1fr auto}}
+select,input[type=search],input[type=text],textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+textarea{resize:vertical;min-height:44px}
+.btn{border:0;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer;background:var(--brand);color:var(--brand-ink);white-space:nowrap}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.f-result{font-size:14px}
+.f-result .miss{color:var(--danger)}
+
+.filters{display:grid;gap:10px;grid-template-columns:1fr 1fr;margin-bottom:14px}
+.filters .q{grid-column:1/-1}
+@media(min-width:860px){.filters{grid-template-columns:2fr 1.4fr 1fr 1fr 1fr}.filters .q{grid-column:auto}}
+.meta{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px;margin:0 0 10px}
+.notice{padding:10px 14px;border-radius:8px;background:color-mix(in srgb,var(--accent) 18%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 45%,var(--line));font-size:14px;margin-bottom:14px}
+
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));padding-bottom:48px}
+.card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.sticker{position:relative;aspect-ratio:4/5;margin:10px 10px 0;border-radius:8px;display:flex;flex-direction:column;justify-content:space-between;padding:10px;color:#fff;overflow:hidden;background:var(--cardbg,#335)}
+.sticker::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.22),transparent 45%)}
+.sticker .num{font-family:Archivo;font-weight:900;font-size:34px;line-height:1;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.sticker .who{font-family:Archivo;font-weight:700;font-size:15px;line-height:1.2}
+.sticker .team{font-size:12px;opacity:.9}
+.rar{position:absolute;top:10px;right:10px;z-index:1;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.45)}
+.card .body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card .alb{font-size:13px;color:var(--muted)}
+.card .tags{font-size:12px;color:var(--muted)}
+.card .foot{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-top:auto;padding-top:6px}
+.price{font-family:Archivo;font-weight:900;font-size:18px}
+.add{border:0;border-radius:8px;padding:8px 10px;width:100%;background:var(--brand);color:#fff;font-weight:600;cursor:pointer}
+.add[aria-pressed=true]{background:var(--surface);color:var(--brand);border:1px solid var(--brand)}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0}
+
+.drawer{position:fixed;inset:0;z-index:50;display:none}
+.drawer.open{display:block}
+.drawer .shade{position:absolute;inset:0;background:rgba(0,0,0,.45)}
+.drawer .sheet{position:absolute;right:0;top:0;bottom:0;width:min(420px,100%);background:var(--surface);display:flex;flex-direction:column}
+.sheet header{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--line)}
+.sheet .items{flex:1;overflow:auto;padding:8px 16px}
+.line{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.line small{display:block;color:var(--muted)}
+.qty{display:flex;align-items:center;gap:4px}
+.qty button{width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:var(--bg);cursor:pointer}
+.sheet footer{padding:16px;border-top:1px solid var(--line);display:grid;gap:10px}
+.tot{display:flex;justify-content:space-between;font-size:14px}
+.tot.big{font-family:Archivo;font-weight:900;font-size:20px}
+.x{border:0;background:none;font-size:22px;cursor:pointer;color:var(--muted)}
+
+footer.site{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:13px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><span class="tile">MF</span>Minhas Figurinhas</a>
+    <span class="spacer"></span>
+    <button class="cart-btn" id="openCart" aria-label="Abrir carrinho">Carrinho <span class="count" id="cartCount">0</span></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Feche seu álbum. <em>Mande a lista de faltantes</em> e receba tudo num envio só.</h1>
+    <p>Figurinhas avulsas, especiais, cards e álbuns de Copa, Brasileirão, Libertadores, Champions e muito mais. Estoque próprio, conferido peça por peça.</p>
+    <div class="perks"><span>Originais</span><span>Envio com rastreio pelos Correios</span><span>Retirada em mãos em Caruaru-PE</span><span>Pedido fechado pelo WhatsApp</span></div>
+  </section>
+
+  <section class="panel faltantes" aria-labelledby="ftit">
+    <h2 id="ftit">Lista de faltantes</h2>
+    <p>Escolha o álbum e cole os números que faltam, separados por vírgula ou espaço. Intervalos valem: <b>12, 45, 230-240</b>.</p>
+    <div class="f-row">
+      <label class="sr" for="fAlbum">Álbum</label>
+      <select id="fAlbum"></select>
+      <label class="sr" for="fNums">Números</label>
+      <textarea id="fNums" rows="1" placeholder="Ex.: 3, 17, 88-95, 210"></textarea>
+      <button class="btn" id="fGo">Buscar e adicionar</button>
+    </div>
+    <div class="f-result" id="fResult" aria-live="polite"></div>
+  </section>
+
+  <div id="notice"></div>
+
+  <section class="filters" aria-label="Filtros">
+    <input class="q" type="search" id="q" placeholder="Buscar jogador, time, número ou álbum">
+    <select id="album" aria-label="Álbum"></select>
+    <select id="tipo" aria-label="Tipo"></select>
+    <select id="raridade" aria-label="Raridade"></select>
+    <select id="ordem" aria-label="Ordenar">
+      <option value="album">Álbum e número</option>
+      <option value="menor">Menor preço</option>
+      <option value="maior">Maior preço</option>
+    </select>
+  </section>
+  <div class="meta"><span id="countTxt">Carregando…</span></div>
+  <section class="grid" id="grid" aria-live="polite"></section>
+</main>
+
+<footer class="site">
+  <div class="wrap">Minhas Figurinhas · Caruaru-PE · Pedidos e dúvidas pelo WhatsApp. Não somos afiliados à Panini, à Topps nem às competições citadas; os nomes servem só para identificar cada coleção.</div>
+</footer>
+
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="ctit">
+  <div class="shade" data-close></div>
+  <div class="sheet">
+    <header><h2 id="ctit" style="font-size:20px">Seu pedido</h2><button class="x" data-close aria-label="Fechar">×</button></header>
+    <div class="items" id="items"></div>
+    <footer>
+      <div class="tot"><span>Itens</span><span id="tItens">R$ 0,00</span></div>
+      <div class="tot"><span id="tFreteLbl">Frete</span><span id="tFrete">R$ 0,00</span></div>
+      <div class="tot big"><span>Total</span><span id="tTotal">R$ 0,00</span></div>
+      <label style="font-size:14px"><input type="checkbox" id="retirada"> Vou retirar em mãos em Caruaru (sem frete)</label>
+      <button class="btn" id="checkout">Fechar pedido no WhatsApp</button>
+      <button class="btn ghost" id="clear">Esvaziar carrinho</button>
+    </footer>
+  </div>
+</div>
+
+<script>
+/* ===== Configuração: edite só aqui ===== */
+const CONFIG = {
+  // Link CSV da aba "Vitrine" (Arquivo > Compartilhar > Publicar na Web > Vitrine > Valores separados por vírgula).
+  CSV_URL: "",
+  // Número do WhatsApp com DDI e DDD, só dígitos. Ex.: 5581999999999
+  WHATSAPP: "",
+  // Frete fixo por pedido (carta registrada). Ajuste quando souber o custo real.
+  FRETE: 10,
+  // Pedido mínimo para frete grátis (0 desliga)
+  FRETE_GRATIS_A_PARTIR: 0
+};
+/* ====================================== */
+
+const DEMO = [
+  ["DEMO-1","10 - Neymar Jr - Brasil - Copa do Mundo 2014","Copa do Mundo 2014","2014","10","Neymar Jr","Brasil","Normal","Rara","Nova","1","R$ 12,00"],
+  ["DEMO-2","00 - Emblema Panini - Copa do Mundo - Copa do Mundo 2014 (Especial)","Copa do Mundo 2014","2014","00","Emblema Panini","Copa do Mundo","Especial","Incomum","Nova","2","R$ 4,00"],
+  ["DEMO-3","17 - Escudo - Flamengo - Brasileirão 2024 (Brilhante)","Brasileirão 2024","2024","17","Escudo","Flamengo","Brilhante","Incomum","Nova","3","R$ 3,50"],
+  ["DEMO-4","45 - Goleiro - Sport - Brasileirão 2024","Brasileirão 2024","2024","45","Goleiro","Sport","Normal","Comum","Nova","5","R$ 2,00"],
+  ["DEMO-5","230 - Atacante - Argentina - Copa do Mundo 2022","Copa do Mundo 2022","2022","230","Atacante","Argentina","Normal","Comum","Nova","4","R$ 2,50"],
+  ["DEMO-6","1 - Lenda - Legends - Libertadores 2026 (Legend)","Libertadores 2026","2026","1","Lenda","Legends","Legend","Muito rara","Nova","1","R$ 35,00"],
+  ["DEMO-7","231 - Meio-campo - Argentina - Copa do Mundo 2022","Copa do Mundo 2022","2022","231","Meio-campo","Argentina","Normal","Comum","Usada","1","R$ 1,50"],
+  ["DEMO-8","Álbum vazio - Copa do Mundo 2026","Copa do Mundo 2026","2026","—","Álbum vazio","Copa do Mundo","Álbum vazio","Comum","Nova","2","R$ 12,90"]
+];
+
+const $ = s => document.querySelector(s);
+const brl = v => v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const norm = s => (s||"").toString().normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+const store = {
+  get(k,d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+
+let ITEMS = [];
+let cart = store.get("mf_cart", {});
+
+function parseCSV(text){
+  const rows=[]; let row=[], cur="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c=='"'){ if(text[i+1]=='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else if(c=='"') q=true;
+    else if(c==','){ row.push(cur); cur=""; }
+    else if(c=='\n'){ row.push(cur); rows.push(row); row=[]; cur=""; }
+    else if(c!='\r') cur+=c;
+  }
+  if(cur!=="" || row.length){ row.push(cur); rows.push(row); }
+  return rows;
+}
+function price(s){
+  const t=(s||"").toString().replace(/[^\d,.-]/g,"");
+  if(!t) return 0;
+  return t.includes(",") ? parseFloat(t.replace(/\./g,"").replace(",", ".")) : parseFloat(t);
+}
+function toItem(r){
+  const [sku,titulo,album,ano,numero,nome,time,tipo,raridade,estado,qtd,preco]=r;
+  return {sku,titulo,album,ano,numero:(numero||"").trim(),nome,time,tipo,raridade,estado,qtd:parseInt(qtd)||0,preco:price(preco)};
+}
+const RAR_COLOR = {"comum":"var(--r-comum)","incomum":"var(--r-incomum)","rara":"var(--r-rara)","muito rara":"var(--r-muito)","lendaria":"var(--r-lend)"};
+function cardBg(it){
+  let h=0; for(const ch of (it.time||it.album)) h=(h*31+ch.charCodeAt(0))%360;
+  return `linear-gradient(160deg,hsl(${h} 55% 38%),hsl(${(h+40)%360} 60% 24%))`;
+}
+function esc(s){ return (s??"").toString().replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+async function load(){
+  let rows=null;
+  if(CONFIG.CSV_URL){
+    try{
+      const res = await fetch(CONFIG.CSV_URL + (CONFIG.CSV_URL.includes("?")?"&":"?") + "t=" + Date.now());
+      if(!res.ok) throw new Error(res.status);
+      rows = parseCSV(await res.text()).slice(1).filter(r=>r[0]);
+    }catch(e){
+      $("#notice").innerHTML = '<div class="notice">Não consegui carregar o estoque agora. Tente de novo em alguns minutos ou chame no WhatsApp.</div>';
+      rows = [];
+    }
+  } else {
+    rows = DEMO;
+    $("#notice").innerHTML = '<div class="notice"><b>Modo demonstração.</b> Estes itens são exemplos. Coloque o link CSV da aba Vitrine em <code>CONFIG.CSV_URL</code> para mostrar o estoque real.</div>';
+  }
+  ITEMS = rows.map(toItem).filter(i=>i.qtd>0);
+  for(const k of Object.keys(cart)){ if(!ITEMS.find(i=>i.sku===k)) delete cart[k]; }
+  fillSelects(); render(); renderCart();
+}
+
+function opts(el, label, values){
+  el.innerHTML = `<option value="">${label}</option>` + values.map(v=>`<option>${esc(v)}</option>`).join("");
+}
+function fillSelects(){
+  const albums=[...new Set(ITEMS.map(i=>i.album))].sort((a,b)=>a.localeCompare(b,"pt-BR",{numeric:true}));
+  opts($("#album"),"Álbum: todos",albums);
+  opts($("#fAlbum"),"Escolha o álbum",albums);
+  opts($("#tipo"),"Tipo: todos",[...new Set(ITEMS.map(i=>i.tipo))].sort());
+  const ordemR=["Comum","Incomum","Rara","Muito rara","Lendária"];
+  opts($("#raridade"),"Raridade: todas",[...new Set(ITEMS.map(i=>i.raridade))].sort((a,b)=>ordemR.indexOf(a)-ordemR.indexOf(b)));
+}
+
+function numKey(n){ const v=parseInt(n); return isNaN(v)?1e9:v; }
+function render(){
+  const q=norm($("#q").value), a=$("#album").value, t=$("#tipo").value, r=$("#raridade").value, o=$("#ordem").value;
+  let list = ITEMS.filter(i=>(!a||i.album===a)&&(!t||i.tipo===t)&&(!r||i.raridade===r)&&(!q||norm([i.titulo,i.nome,i.time,i.album,i.numero].join(" ")).includes(q)));
+  if(o==="menor") list.sort((x,y)=>x.preco-y.preco);
+  else if(o==="maior") list.sort((x,y)=>y.preco-x.preco);
+  else list.sort((x,y)=>x.album.localeCompare(y.album,"pt-BR",{numeric:true})||numKey(x.numero)-numKey(y.numero));
+  $("#countTxt").textContent = `${list.length} ${list.length===1?"item disponível":"itens disponíveis"}`;
+  $("#grid").innerHTML = list.length ? list.map(i=>{
+    const inCart = !!cart[i.sku];
+    return `<article class="card">
+      <div class="sticker" style="--cardbg:${cardBg(i)}">
+        <span class="rar" style="background:${RAR_COLOR[norm(i.raridade)]||"rgba(0,0,0,.45)"}">${esc(i.raridade)}</span>
+        <span class="num">${esc(i.numero)}</span>
+        <span><span class="who">${esc(i.nome)}</span><br><span class="team">${esc(i.time)}</span></span>
+      </div>
+      <div class="body">
+        <div class="alb">${esc(i.album)}</div>
+        <div class="tags">${esc(i.tipo)} · ${esc(i.estado)} · ${i.qtd} em estoque</div>
+        <div class="foot"><span class="price">${brl(i.preco)}</span>
+          <button class="add" data-sku="${esc(i.sku)}" aria-pressed="${inCart}">${inCart?"No carrinho":"Adicionar"}</button></div>
+      </div></article>`;
+  }).join("") : `<div class="empty">Nada encontrado com esses filtros. Mande sua lista de faltantes pelo WhatsApp que a gente procura.</div>`;
+}
+
+function add(sku,n=1){
+  const it=ITEMS.find(i=>i.sku===sku); if(!it) return;
+  cart[sku]=Math.min((cart[sku]||0)+n,it.qtd);
+  store.set("mf_cart",cart); render(); renderCart();
+}
+function setQty(sku,n){
+  const it=ITEMS.find(i=>i.sku===sku);
+  if(n<=0) delete cart[sku]; else cart[sku]=Math.min(n,it?it.qtd:n);
+  store.set("mf_cart",cart); render(); renderCart();
+}
+function totals(){
+  let itens=0,count=0;
+  for(const [sku,n] of Object.entries(cart)){ const it=ITEMS.find(i=>i.sku===sku); if(it){ itens+=it.preco*n; count+=n; } }
+  const retirada=$("#retirada").checked;
+  let frete = (count===0||retirada) ? 0 : CONFIG.FRETE;
+  if(CONFIG.FRETE_GRATIS_A_PARTIR && itens>=CONFIG.FRETE_GRATIS_A_PARTIR) frete=0;
+  return {itens,frete,total:itens+frete,count,retirada};
+}
+function renderCart(){
+  const lines=Object.entries(cart).map(([sku,n])=>{
+    const it=ITEMS.find(i=>i.sku===sku); if(!it) return "";
+    return `<div class="line"><div>${esc(it.numero)} · ${esc(it.nome)}<small>${esc(it.album)} · ${brl(it.preco)} cada</small></div>
+      <div class="qty"><button data-dec="${esc(sku)}" aria-label="Menos">−</button><span>${n}</span><button data-inc="${esc(sku)}" aria-label="Mais">+</button></div>
+      <strong>${brl(it.preco*n)}</strong></div>`;
+  }).join("");
+  $("#items").innerHTML = lines || `<p style="color:var(--muted)">Carrinho vazio.</p>`;
+  const t=totals();
+  $("#cartCount").textContent=t.count;
+  $("#tItens").textContent=brl(t.itens);
+  $("#tFrete").textContent=t.retirada?"Retirada":brl(t.frete);
+  $("#tTotal").textContent=brl(t.total);
+  $("#checkout").disabled=!t.count;
+}
+
+function parseNums(s){
+  const out=new Set();
+  for(const part of s.split(/[\s,;]+/).filter(Boolean)){
+    const m=part.match(/^(\d+)-(\d+)$/);
+    if(m){ let a=+m[1],b=+m[2]; if(a>b)[a,b]=[b,a]; if(b-a<=1000) for(let i=a;i<=b;i++) out.add(String(i)); }
+    else out.add(part.replace(/^0+(?=\d)/,"").toUpperCase());
+  }
+  return [...out];
+}
+function faltantes(){
+  const alb=$("#fAlbum").value, nums=parseNums($("#fNums").value);
+  if(!alb||!nums.length){ $("#fResult").textContent="Escolha o álbum e informe pelo menos um número."; return; }
+  const key=n=>n.replace(/^0+(?=\d)/,"").toUpperCase();
+  const found=[],miss=[];
+  for(const n of nums){
+    const it=ITEMS.find(i=>i.album===alb&&key(i.numero)===n);
+    if(it){ add(it.sku,1); found.push(n); } else miss.push(n);
+  }
+  $("#fResult").innerHTML = `<b>${found.length}</b> adicionada(s) ao carrinho${found.length?": "+found.join(", "):""}.`
+    + (miss.length?` <span class="miss">Sem estoque agora: ${miss.join(", ")}.</span> Elas vão na mensagem do pedido para a gente procurar.`:"");
+  window._faltando={album:alb,nums:miss};
+  if(found.length) openCart();
+}
+
+function checkout(){
+  const t=totals(); if(!t.count) return;
+  const L=["Olá! Quero fechar este pedido da Minhas Figurinhas:",""];
+  for(const [sku,n] of Object.entries(cart)){
+    const it=ITEMS.find(i=>i.sku===sku); if(it) L.push(`• ${n}x ${it.titulo} (${sku}): ${brl(it.preco*n)}`);
+  }
+  L.push("",`Itens: ${brl(t.itens)}`, t.retirada?"Entrega: retirada em mãos em Caruaru":`Frete: ${brl(t.frete)}`, `Total: ${brl(t.total)}`);
+  const f=window._faltando; if(f&&f.nums.length) L.push("",`Também procuro do ${f.album}: ${f.nums.join(", ")}`);
+  const url=(CONFIG.WHATSAPP?`https://wa.me/${CONFIG.WHATSAPP}`:"https://wa.me/")+"?text="+encodeURIComponent(L.join("\n"));
+  window.open(url,"_blank","noopener");
+}
+
+function openCart(){ $("#drawer").classList.add("open"); }
+function closeCart(){ $("#drawer").classList.remove("open"); }
+
+["q","album","tipo","raridade","ordem"].forEach(id=>$("#"+id).addEventListener("input",render));
+$("#grid").addEventListener("click",e=>{ const b=e.target.closest(".add"); if(b){ cart[b.dataset.sku]?setQty(b.dataset.sku,0):add(b.dataset.sku); } });
+$("#items").addEventListener("click",e=>{
+  const i=e.target.dataset.inc, d=e.target.dataset.dec;
+  if(i) setQty(i,(cart[i]||0)+1); if(d) setQty(d,(cart[d]||0)-1);
+});
+$("#openCart").addEventListener("click",openCart);
+$("#drawer").addEventListener("click",e=>{ if(e.target.hasAttribute("data-close")) closeCart(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeCart(); });
+$("#retirada").addEventListener("change",renderCart);
+$("#checkout").addEventListener("click",checkout);
+$("#clear").addEventListener("click",()=>{ cart={}; store.set("mf_cart",cart); render(); renderCart(); });
+$("#fGo").addEventListener("click",faltantes);
+load();
+</script>
+</body>
+</html>
